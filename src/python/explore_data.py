@@ -9,9 +9,11 @@ def load_data():
 
     df=(df
         .with_columns(pl.col('date').str.to_datetime())
-        .with_columns(day = pl.col('date').dt.date())
+        .with_columns(day = pl.col('date').dt.date(),
+                      returns = pl.col('close').log().add(1).pct_change(),
+                      ranges = pl.col('high')-pl.col('low'))
         .filter(pl.col('day') == datetime.date(2022,2,28))
-        .select(['date','close'])
+        .select(['date','close','returns','ranges'])
         .sort(pl.col('date'))
         )
     return df
